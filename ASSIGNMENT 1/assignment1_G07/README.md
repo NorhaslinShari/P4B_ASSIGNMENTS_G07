@@ -6,7 +6,7 @@
 ## Group
 
 - Group ID: <your group id>
-- Members: <full name (matric)>, <full name (matric)>, <full name (matric)>
+- Members: NORHASLIN BINTI SHARI (A24CS0149), FATIN SYAKIRAH (A24CS0073), BATRISYIA AMANI (A24CS0054)>
 
 ## What this project does
 
