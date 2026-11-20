@@ -17,10 +17,10 @@
 
 ## Entry 1
 
-- Date: <Date and time of the interaction>
+- Date: 20 November 2026 (4:45 PM)
 - Tool: <Tool name, version, access date and URL (UTM citation format)>
 - Purpose: <One of: explain, hint, review, debug, generate-code, generate-text, tests-plan, other>
-- Prompt: <The exact prompt you typed (paste it)>
+- Prompt: can u help me with task 5? but do not give me answer just explain and hint.......help me until my code is correct and follow what instruction want 
 - Output: <What the AI gave back, in 1 to 3 lines (attach the full text if you used it)>
 - Verified by: <How you checked it: ran pytest, read the docs, compared with data, asked lecturer>
 - My change: <What you accepted, rejected or rewrote, and why>
