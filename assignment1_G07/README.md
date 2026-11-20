@@ -5,8 +5,8 @@
 
 ## Group
 
-- Group ID: <your group id>
-- Members: NORHASLIN BINTI SHARI (A24CS0149), FATIN SYAKIRAH (A24CS0073), BATRISYIA AMANI (A24CS0054)>
+- Group ID: Group G07
+- Members: NORHASLIN BINTI SHARI (A24CS0149), FATIN SYAKIRAH BINTI MOHAMAD HARDON (A24CS0073), BATRISYIA AMANI BINTI KHAIRUN HALED (A24CS0054)
 
 ## What this project does
 
@@ -47,9 +47,12 @@ They are read at run time and passed to the functions; they are not typed into t
 
 ## Who did what
 
-| Member | Main contributions | Commits |
-|---|---|---|
-| <name> | <files or functions> | <number> |
+|     Member     | Main contributions   | Commits  |
+|----------------|----------------------|----------|
+| Fatin Syakirah | <files or functions> | <number> |
+| Batrisyia Amani|                      |          |
+| Norhaslin      |                      |          |
+
 
 ## AI use
 
