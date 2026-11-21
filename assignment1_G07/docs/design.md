@@ -3,17 +3,17 @@
 Write this BEFORE you write the code, then keep it up to date. It is marked by the lecturer.
 Use your own words, your own thresholds and your own data. Delete the guidance in italics.
 
-Group ID: <your group id>      Thresholds from data/params.json: min_depth = <...>, min_quality = <...>, top_k = <...>
+Group ID: G07    Thresholds from data/params.json: min_depth = <...>, min_quality = <...>, top_k = <...>
 
 ## 1. Decomposition
 
 | Question | Our answer |
 |---|---|
-| Input | |
-| Output | |
-| Constraints (named thresholds, what happens at exactly the threshold) | |
-| Rule order and why the order matters | |
-| Out of scope | |
+| Input | A variant row containing variant, gene, chrom, pos, ref, alt, depth, quality and impact. A parameters dictionary containing min_depth, min_quality, priority_genes and top_k. |
+| Output | Classification result consisting of a decision (prioritize, review or exclude) and a reason. Triage produces a list of new dictionaries with decision and reason added. |
+| Constraints (named thresholds, what happens at exactly the threshold) | Depth and quality values are compared against min_depth and min_quality from params. Boundary values are inclusive. A depth equal to min_depth passes. A quality equal to min_quality passes. Rule order must be followed exactly. |
+| Rule order and why the order matters | The rules are checked from Rule 1 to Rule 6. The first matching rule determines the decision. Order matters because a variant may satisfy multiple conditions. For example, a variant with depth below the threshold and quality below the threshold must be excluded for low depth because Rule 1 comes before Rule 2. |
+| Out of scope | Biological interpretation of variants, real clinical diagnosis, file validation beyond assignment requirements, and handling additional fields not listed in the specification. |
 
 ## 2. Pseudocode or flowchart of classify_variant
 
