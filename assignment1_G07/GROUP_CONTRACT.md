@@ -51,5 +51,5 @@ every member signs the log and this contract.
 
 - Signed: <full name>, <matric number>, <date>
 - Signed: <full name>, <matric number>, <date>
-- Signed: <full name>, <matric number>, <date>
-- Signed: <full name>, <matric number>, <date>
+- Signed: NORHASLIN BINTI SHARI, A24CS0149, 21 November 2026
+
