@@ -21,8 +21,15 @@ pip install -r requirements.txt
 ```
 
 ## Run
+Run the program using:
 
-<Write the exact command. The course command is: python src/a1_triage.py data/variants.csv data/params.json results>
+python src/a1_triage.py data/variants.csv data/params.json results
+
+The program generates the following files in the results/ directory:
+
+- triage.csv - classified variant results
+- report.txt - summary report containing statistics and decision counts
+
 <Say which files appear in results/.>
 
 ## Test and lint
@@ -34,14 +41,28 @@ ruff check src
 
 ## Our parameters
 
-Our thresholds, priority genes and top_k are in data/params.json (<write the values here>).
+{
+  "min_depth": 12,
+  "min_quality": 70,
+  "priority_genes": [
+    "ATM",
+    "PTEN",
+    "EGFR",
+    "APC",
+    "BRCA2"
+  ],
+  "top_k": 6
+}
 They are read at run time and passed to the functions; they are not typed into the rules.
 
 ## Design
 
 <Link to docs/design.md and say in two sentences what it contains.>
+The document describes the problem decomposition, classification rules, pseudocode, hand-traced examples, test plan, and work allocation among group members. It explains how variant data are processed and how classification decisions are produced based on configurable thresholds and priority genes.
 
 ## Limitations
+1. Only depth, quality, gene priority, and impact are considered when making decisions; other genomic factors are not evaluated.
+2. Missing or malformed input fields may cause errors if they are not handled before processing.
 
 <At least two honest limitations, for example: rules use depth, quality and impact only; the data are synthetic.>
 
@@ -56,4 +77,4 @@ They are read at run time and passed to the functions; they are not typed into t
 
 ## AI use
 
-<One sentence: see AI_USE_LOG.md. Say whether the group used AI.>
+Yes, we all use AI
