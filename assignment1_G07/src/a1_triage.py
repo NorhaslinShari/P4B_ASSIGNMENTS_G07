@@ -51,23 +51,23 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     impact = str(row.get("impact", "")).strip()
 
     if depth < min_depth:
-        return "exclude", f"low depth ({depth} < {min_depth})"
+        return "exclude", f"low depth {depth} threshold {min_depth}"
 
     if quality < min_quality:
-        return "exclude", f"low quality ({quality} < {min_quality})"
+        return "exclude", f"low quality {quality} threshold {min_quality}"
 
     raw_impacts = params.get("priority_impacts", ["high", "moderate"])
-    priority_impacts = {impact.strip().lower() for impact in raw_impacts}
+    priority_impacts = {i.lower() for i in raw_impacts}
     
     raw_panel_genes = params.get("panel_genes", None)
-    panel_genes = {gene.strip().lower() for gene in raw_panel_genes} if raw_panel_genes is not None else None
+    panel_genes = {g.lower() for g in raw_panel_genes} if raw_panel_genes is not None else None
 
-    if panel_genes is not None and gene in panel_genes:
-        return "prioritize", f"priority gene with high/medium impact"
+    if panel_genes is not None and gene.lower() in panel_genes:
+        return "prioritize", f"panel_gene gene {gene}"
     elif impact.lower() in priority_impacts:
-        return "prioritize", f"priority gene with high/medium impact"
+        return "prioritize", f"prioritize_impact impact {impact} gene {gene}"
     else:
-        return "review", f"non-priority gene with low/modifier impact"
+        return "review", f"review_impact impact {impact} gene {gene}"
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
