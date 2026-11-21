@@ -1,12 +1,8 @@
 import pytest 
 
 from a1_triage import (
-    CSV_COLUMNS,
     classify_variant,
-    decision_counts,
     rank_variants,
-    results_to_csv,
-    triage,
 )
 
 PARAMS = {"min_depth": 12, "min_quality": 80, "priority_genes": ["BRCA3", "TP53"], "top_k": 3}
@@ -62,4 +58,3 @@ def test_invalid_input_test():
     with pytest.raises(ValueError):
         classify_variant(row(depth="adbs"), PARAMS)
     
-
