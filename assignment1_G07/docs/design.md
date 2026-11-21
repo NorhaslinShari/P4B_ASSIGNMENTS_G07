@@ -53,13 +53,41 @@ your choice that reach rules 3 to 6. Do it by hand BEFORE you run your code, the
 
 | Variant | Gene | Depth | Quality | Impact | Rule that fires | Decision | Reason |
 |---|---|---|---|---|---|---|---|
-| v1 | | | | | | | |
+| v1 | RB1 | 9 | 90 | moderate | Rule 1 | exclude | depth 9 below min_depth 12 |
+| v2 | BRCA2 | 10 | 90 | high | Rule 1 | exclude | depth 10 below min_depth 12 |
+| v3 | MLH1 | 11 | 90 | moderate | Rule 1 | exclude | depth 11 below min_depth 12 |
+| v4 | TP53 | 30 | 79 | low | Rule 6 | exclude | non-priority gene TP53 with low impact |
+| v5 | ATM | 30 | 80 | modifier | Rule 4 | review | priority gene ATM with modifier impact |
+| v6 | TP53 | 30 | 81 | high | Rule 5 | review | non-priority gene TP53 with high impact |
+| v11 | PTEN | 28 | 67 | high | Rule 2 | exclude | quality 67 below min_quality 70 |
+| v22 | APC | 28 | 90 | high | Rule 3 | prioritize | priority gene APC with high impact |
 
 ## 4. Test plan
 
 *List the cases you will test: normal, boundary (exactly at YOUR thresholds, one below, one above), invalid or
 awkward input (empty list, k = 0, k larger than the data, messy text). One line per case.*
 
+- Depth 11 should be excluded because it is below min_depth 12.
+- Depth 12 should pass because it equals min_depth 12.
+- Depth 13 should pass because it is above min_depth 12.
+- Quality 69 should be excluded because it is below min_quality 70.
+- Quality 70 should pass because it equals min_quality 70.
+- Quality 71 should pass because it is above min_quality 70.
+- v23 (MLH1, quality 70, high) should return review under Rule 5.
+- v26 (APC, quality 70, low) should return review under Rule 4.
+- Gene names with extra spaces and mixed case should still be classified correctly.
+- An empty list passed to triage() should return an empty list.
+- rank_variants() with k = 0 should return an empty list.
+- rank_variants() with k larger than the number of variants should return all eligible variants.
+- rank_variants() with a negative k should raise ValueError.
+
 ## 5. Work plan
 
 *Who builds which function, in which order, and how you will review each other's code.*
+- Fatin Syakirah will complete Task 1 (Design) and Task 7 (Group work, Git evidence and AI log).
+- Batrisyia Amani will complete Task 2 (Triage rules) and Task 4 (Ranked top-k).
+- Norhaslin will complete Task 3 (Summaries), Task 5 (CSV export and report), and Task 6 (Tests, README and code quality).
+- Work will be completed in task order so that later functions can use the earlier ones.
+- Each member will work on their own Git branch and commit their changes to that branch.
+- Team members will review each other's code through pull requests before merging into the main branch.
+- The completed program will be tested together before submission.
