@@ -43,12 +43,12 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     Gene symbols and impact labels are compared after strip() and case folding.
     depth, quality and pos may arrive as text.
     """
-    min_depth = params["min_depth"]
-    min_quality = params["min_quality"]
-    depth = int(row["depth"])
-    quality = float(row["quality"])
-    gene = row["gene"].strip().casefold()
-    impact = row["impact"].strip().casefold()
+    min_depth = int(params.get("min_depth", 10))
+    min_quality = float(params.get("min_quality", 80.0))
+    depth = int(str(row.get("depth", 0)).strip())
+    quality = float(str(row.get("quality", 0)).strip())
+    gene = str(row.get("gene", "")).strip().casefold()
+    impact = str(row.get("impact", "")).strip().casefold()
 
     if depth < min_depth:
         return "exclude", "low depth"
@@ -56,17 +56,15 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     if quality < min_quality:
         return "exclude", "low quality"
 
-    priority_impacts = params["priority_impacts"]
-    panel_genes = {g.strip().casefold() for g in params["priority_genes"]}
+    priority_impacts = params.get("priority_impacts", {"high", "moderate"})
+    panel_genes = {g.strip().casefold() for g in params.get("panel_genes", None)}
 
-    if gene in panel_genes and impact in priority_impacts:
+    if panel_genes is not None and gene in panel_genes:
         return "prioritize", "priority gene with high/medium impact"
-    elif gene in panel_genes:
-        return "review", "priority gene with low/modifier impact"
-    elif impact in priority_impacts:
-        return "review", "non-priority gene with high/medium impact"
+    elif impact.lower() in priority_impacts:
+        return "prioritize", "priority gene with high/medium impact"
     else:
-        return "exclude", "non-priority gene with low/modifier impact"
+        return "review", "non-priority gene with low/modifier impact"
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
