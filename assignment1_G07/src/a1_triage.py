@@ -89,25 +89,34 @@ def gene_summary(results: list[dict]) -> dict[str, dict]:
         gene = result["gene"]
 
         if gene not in summary: #initialize
-            summary[gene] {
+            summary[gene] = {
                 "total": 0, "prioritize": 0, "review": 0, 
-                "exclude": 0, "mean_depth": 0
+                "exclude": 0, "sum_depth": 0
             }
 
         summary[gene]["total"] += 1 # if exist gene dlm summary then proceed count 
         summary[gene][result["decision"]] += 1
-        summary[gene]["mean_depth"] += result["depth"]
+        summary[gene]["sum_depth"] += result["depth"]
 
-        gene_summarize = {}
+    gene_summarize = {}
 
-        for gene in sorted(summary): #sort kan gene
-            total = summary[gene]["total"]  #already store value
-            depth = summary[gene]["mean_depth"]
+    for gene in sorted(summary): #sort kan gene
+        total = summary[gene]["total"]  #already store value
+        depth = summary[gene]["sum_depth"]
 
         gene_summarize[gene]= {"total": total, "prioritize": summary[gene]["prioritize"],
-                               "review": summary[gene]["review"], "exclude": summary[gene]["exclude"],
-                               "mean_depth":round(depth/total, 1)}
+                                "review": summary[gene]["review"], "exclude": summary[gene]["exclude"],
+                                "mean_depth":round(depth/total, 1)}
     return gene_summarize
+
+results = [
+    {"gene": "TP53", "depth": 30, "decision": "exclude"},
+    {"gene": "TP53", "depth": 50, "decision": "prioritize"},
+    {"gene": "BRCA1", "depth": 10, "decision": "prioritize"},
+    {"gene": "BRCA1", "depth": 20, "decision": "review"},
+]
+
+print(gene_summary(results))
 
 
 def rank_variants(results: list[dict], k: int) -> list[dict]:
