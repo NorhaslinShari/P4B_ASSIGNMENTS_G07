@@ -124,11 +124,10 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
     sorted_results = sorted(
         filtered_results,
         key=lambda r: (
-            DECISIONS.index(r["decision"]),  
-            IMPACT_ORDER.index(r["impact"]),  
-            -int(r["quality"]),                
-            -int(r["depth"]),                  
-            int(r["pos"])                     
+            0 if r.get("decision") == "prioritize" else 1,   
+            -int(r.get("quality", 0)),                
+            -int(r.get("depth", 0)),                  
+            int(r.get("pos", 0))                     
         )
     )
 
