@@ -56,7 +56,12 @@ def triage(rows: list[dict], params: dict) -> list[dict]:
 
 def decision_counts(results: list[dict]) -> dict[str, int]:
     """Number of results per decision; keys are always prioritize, review, exclude (in order)."""
-    raise NotImplementedError("TODO: implement decision_counts")
+    count = { "prioritize": 0, "review": 0, "exclude": 0,} 
+    for result in results:
+        decision = result["decision"] #specific to decision in results = decision : prioritize
+        count[decision] += 1 # add 1 to prioritize
+
+    return count
 
 
 def impact_counts(results: list[dict]) -> dict[str, int]:
@@ -64,8 +69,13 @@ def impact_counts(results: list[dict]) -> dict[str, int]:
 
     Keys are always high, moderate, low, modifier (in that order), zeros included.
     """
-    raise NotImplementedError("TODO: implement impact_counts")
+    count = { "high": 0, "moderate": 0, "low": 0, "modifier": 0}
+    for result in results:
+        if result["decision"] != "exclude":
+            impact = result["impact"]
+            count[impact] += 1
 
+    return count # same with decision_count
 
 def gene_summary(results: list[dict]) -> dict[str, dict]:
     """Per-gene summary, genes in alphabetical order.
@@ -73,7 +83,31 @@ def gene_summary(results: list[dict]) -> dict[str, dict]:
     Each value is {"total": n, "prioritize": a, "review": b, "exclude": c, "mean_depth": d}
     where mean_depth is the mean depth of ALL the gene's variants, rounded to 1 decimal.
     """
-    raise NotImplementedError("TODO: implement gene_summary")
+    # result untuk tiap gene
+    summary = {}
+    for result in results:
+        gene = result["gene"]
+
+        if gene not in summary: #initialize
+            summary[gene] {
+                "total": 0, "prioritize": 0, "review": 0, 
+                "exclude": 0, "mean_depth": 0
+            }
+
+        summary[gene]["total"] += 1 # if exist gene dlm summary then proceed count 
+        summary[gene][result["decision"]] += 1
+        summary[gene]["mean_depth"] += result["depth"]
+
+        gene_summarize = {}
+
+        for gene in sorted(summary): #sort kan gene
+            total = summary[gene]["total"]  #already store value
+            depth = summary[gene]["mean_depth"]
+
+        gene_summarize[gene]= {"total": total, "prioritize": summary[gene]["prioritize"],
+                               "review": summary[gene]["review"], "exclude": summary[gene]["exclude"],
+                               "mean_depth":round(depth/total, 1)}
+    return gene_summarize
 
 
 def rank_variants(results: list[dict], k: int) -> list[dict]:
