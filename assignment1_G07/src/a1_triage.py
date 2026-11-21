@@ -109,15 +109,6 @@ def gene_summary(results: list[dict]) -> dict[str, dict]:
                                 "mean_depth":round(depth/total, 1)}
     return gene_summarize
 
-results = [
-    {"gene": "TP53", "depth": 30, "decision": "exclude"},
-    {"gene": "TP53", "depth": 50, "decision": "prioritize"},
-    {"gene": "BRCA1", "depth": 10, "decision": "prioritize"},
-    {"gene": "BRCA1", "depth": 20, "decision": "review"},
-]
-
-print(gene_summary(results))
-
 
 def rank_variants(results: list[dict], k: int) -> list[dict]:
     """Top k variants that were not excluded, best first.
