@@ -43,7 +43,30 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     Gene symbols and impact labels are compared after strip() and case folding.
     depth, quality and pos may arrive as text.
     """
-    raise NotImplementedError("TODO: implement classify_variant")
+    min_depth = params["min_depth"]
+    min_quality = params["min_quality"]
+    depth = int(row["depth"])
+    quality = float(row["quality"])
+    gene = row["gene"].strip().casefold()
+    impact = row["impact"].strip().casefold()
+
+    if depth < min_depth:
+        return "exclude", "low depth"
+
+    if quality < min_quality:
+        return "exclude", "low quality"
+
+    priority_impacts = params["priority_impacts"]
+    panel_genes = {g.strip().casefold() for g in params["priority_genes"]}
+
+    if gene in panel_genes and impact in priority_impacts:
+        return "prioritize", "priority gene with high/medium impact"
+    elif gene in panel_genes:
+        return "review", "priority gene with low/modifier impact"
+    elif impact in priority_impacts:
+        return "review", "non-priority gene with high/medium impact"
+    else:
+        return "exclude", "non-priority gene with low/modifier impact"
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
