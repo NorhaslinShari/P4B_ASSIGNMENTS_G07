@@ -75,7 +75,14 @@ def triage(rows: list[dict], params: dict) -> list[dict]:
 
     The input rows and params are never modified.
     """
-    raise NotImplementedError("TODO: implement triage")
+    results = []
+    for row in rows:
+        decision, reason = classify_variant(row, params)
+        new_row = row.copy()
+        new_row["decision"] = decision
+        new_row["reason"] = reason
+        results.append(new_row)
+    return results
 
 
 def decision_counts(results: list[dict]) -> dict[str, int]:
@@ -109,7 +116,23 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
     Raises:
         ValueError: if k is negative.
     """
-    raise NotImplementedError("TODO: implement rank_variants")
+    if k < 0:
+        raise ValueError("k must be non-negative")
+
+    filtered_results = [r for r in results if r["decision"] != "exclude"]
+
+    sorted_results = sorted(
+        filtered_results,
+        key=lambda r: (
+            DECISIONS.index(r["decision"]),  
+            IMPACT_ORDER.index(r["impact"]),  
+            -int(r["quality"]),                
+            -int(r["depth"]),                  
+            int(r["pos"])                     
+        )
+    )
+
+    return sorted_results[:k]
 
 
 def results_to_csv(results: list[dict]) -> str:
