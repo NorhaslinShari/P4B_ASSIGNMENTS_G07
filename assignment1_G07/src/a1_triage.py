@@ -44,27 +44,30 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     depth, quality and pos may arrive as text.
     """
     min_depth = int(params.get("min_depth", 10))
-    min_quality = float(params.get("min_quality", 80.0))
-    depth = int(str(row.get("depth", 0)).strip())
-    quality = float(str(row.get("quality", 0)).strip())
-    gene = str(row.get("gene", "")).strip().casefold()
-    impact = str(row.get("impact", "")).strip().casefold()
+    min_quality = int(params.get("min_quality", 80))
+    depth = int(row["depth"])
+    quality = int(row["quality"])
+    gene = str(row.get("gene", row.get("gene_symbol", ""))).strip()
+    impact = str(row.get("impact", "")).strip()
 
     if depth < min_depth:
-        return "exclude", "low depth"
+        return "exclude", f"low depth ({depth} < {min_depth})"
 
     if quality < min_quality:
-        return "exclude", "low quality"
+        return "exclude", f"low quality ({quality} < {min_quality})"
 
-    priority_impacts = params.get("priority_impacts", {"high", "moderate"})
-    panel_genes = {g.strip().casefold() for g in params.get("panel_genes", None)}
+    raw_impacts = params.get("priority_impacts", ["high", "moderate"])
+    priority_impacts = {impact.strip().lower() for impact in raw_impacts}
+    
+    raw_panel_genes = params.get("panel_genes", None)
+    panel_genes = {gene.strip().lower() for gene in raw_panel_genes} if raw_panel_genes is not None else None
 
     if panel_genes is not None and gene in panel_genes:
-        return "prioritize", "priority gene with high/medium impact"
+        return "prioritize", f"priority gene with high/medium impact"
     elif impact.lower() in priority_impacts:
-        return "prioritize", "priority gene with high/medium impact"
+        return "prioritize", f"priority gene with high/medium impact"
     else:
-        return "review", "non-priority gene with low/modifier impact"
+        return "review", f"non-priority gene with low/modifier impact"
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
