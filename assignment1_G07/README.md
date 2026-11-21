@@ -11,7 +11,7 @@
 ## What this project does
 
 <Three or four sentences: what a variant triage service is, what goes in, what comes out.>
-
+This project is a rule-based variant triage service that classifies genetic variants as prioritize, review, or exclude. It reads variant data from a CSV file and parameters from a JSON file, applies predefined classification rules, and generates a CSV output and summary report.
 ## Set up
 
 ```
