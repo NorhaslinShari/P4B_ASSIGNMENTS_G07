@@ -5,7 +5,7 @@ from a1_triage import (
     rank_variants,
 )
 
-PARAMS = {"min_depth": 12, "min_quality": 80, "priority_genes": ["BRCA3", "TP53"], "top_k": 3}
+PARAMS = {"min_depth": 12, "min_quality": 80, "priority_genes": ["BRCA2", "ATM"], "top_k": 3}
 
 def row(variant="v1", gene="BRCA1", depth=40, quality=95, impact="high", pos=1000):
     return {"variant": variant, "gene": gene, "chrom": "17", "pos": str(pos), "depth": str(depth),
@@ -32,7 +32,7 @@ def test_boundary_depth_above_threshold():
     assert decision == "prioritize"
 
 def test_messy_text_input():
-    assert classify_variant(row(gene=" BRCA3 ", impact =" HIGH "), PARAMS)[0] == "prioritize" 
+    assert classify_variant(row(gene=" BRCA2 ", impact =" HIGH "), PARAMS)[0] == "prioritize" 
 
 def test_empty_list_rank_variants():
     assert rank_variants([], PARAMS["top_k"]) == []
