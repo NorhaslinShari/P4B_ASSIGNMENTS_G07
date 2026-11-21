@@ -96,7 +96,7 @@ def results_to_csv(results: list[dict]) -> str:
     header_line = [",".join(CSV_COLUMNS)]
     for result in results:
         row = ",".join(str(result[column]) for column in CSV_COLUMNS)
-        header_line.append(row) # heaedr_line append new row (only list can append)
+        header_line.append(row) # heaedr_line append new row (only list can append!)
 
     return "\n".join(header_line) + "\n" # add both end
 
