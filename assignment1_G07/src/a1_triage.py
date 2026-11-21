@@ -73,7 +73,7 @@ def impact_counts(results: list[dict]) -> dict[str, int]:
     for result in results:
         if result["decision"] != "exclude":
             impact = result["impact"]
-            count[impact] += 1
+            count[impact] += 1 
 
     return count # same with decision_count
 
