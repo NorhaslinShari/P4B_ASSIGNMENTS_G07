@@ -67,19 +67,14 @@ your choice that reach rules 3 to 6. Do it by hand BEFORE you run your code, the
 *List the cases you will test: normal, boundary (exactly at YOUR thresholds, one below, one above), invalid or
 awkward input (empty list, k = 0, k larger than the data, messy text). One line per case.*
 
-- Depth 11 should be excluded because it is below min_depth 12.
-- Depth 12 should pass because it equals min_depth 12.
-- Depth 13 should pass because it is above min_depth 12.
-- Quality 69 should be excluded because it is below min_quality 70.
-- Quality 70 should pass because it equals min_quality 70.
-- Quality 71 should pass because it is above min_quality 70.
-- v23 (MLH1, quality 70, high) should return review under Rule 5.
-- v26 (APC, quality 70, low) should return review under Rule 4.
-- Gene names with extra spaces and mixed case should still be classified correctly.
-- An empty list passed to triage() should return an empty list.
-- rank_variants() with k = 0 should return an empty list.
-- rank_variants() with k larger than the number of variants should return all eligible variants.
-- rank_variants() with a negative k should raise ValueError.
+- Normal case: A priority gene with high impact should return prioritize.
+- Boundary case: Depth 11 should be excluded because it is below min_depth 12.
+- Boundary case: Depth 12 should pass because it equals min_depth 12.
+- Boundary case: Depth 13 should pass because it is above min_depth 12.
+- Awkward input: Gene names with extra spaces and mixed case should still be classified correctly.
+- Awkward input: An empty list passed to rank_variants() should return an empty list.
+- Awkward input: rank_variants() with k larger than the number of variants should return all available variants.
+- Invalid input: A non-numeric depth value should raise an exception when converted to an integer.
 
 ## 5. Work plan
 
