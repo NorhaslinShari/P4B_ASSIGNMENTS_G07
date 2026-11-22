@@ -3,7 +3,7 @@
 <!-- SECB3203 prompt log. Policy: PROPOSED - for approval by the SECB3203 course team before circulation to students. Fill in, then run: python tools/check_ai_log.py AI_USE_LOG.md --assessment <key> -->
 
 - Course: SECB3203
-- Assessment: <e.g. Lab 4>
+- Assessment: Assignment 1
 - Student name: <full name>
 - Matric no: <matric>
 - Group ID: <group work only, else n/a>
@@ -241,3 +241,214 @@ plus whatever newline requirement the spec asks for.
 - Used in: a1_triage.py
 
 <!-- Copy the whole 'Entry' block for each extra interaction: ## Entry 2, ## Entry 3 ... -->
+
+## Entry 2
+
+- Date: 21 November 2026 (6:53 PM)
+- Tool: Tools cited: Microsoft Copilot (GPT-5 Chat Model). Accessed 21 November 2026. Available at: https://copilot.microsoft.com/ 
+- Purpose: explain and hint
+- Prompt: gene_summary(results) dict of dicts
+One entry per gene present, genes in alphabetical order. Each entry has total, prioritize, review, exclude and mean_depth (mean depth of ALL the gene's variants, rounded to 1 decimal). Empty input gives {}.....can u explain how the flow? not answer just flow
+- Output:
+For:
+
+Python
+gene_summary(results)
+
+Input is probably a list like
+Python
+results = [
+{"gene": "BRCA1", "decision": "prioritize", "depth": 100},
+{"gene": "TP53", "decision": "review", "depth": 50},
+{"gene": "BRCA1", "decision": "exclude", "depth": 80},
+]
+Step 1: Handle empty input
+
+First check:
+
+Python
+results == []
+
+If yes:
+Python
+return {}
+
+because the specification says:
+
+Empty input gives {}
+
+Step 2: Create an empty summary dictionary
+
+Think:
+
+Plain Text
+summary = {}
+This dictionary will eventually look like:
+=
+Python
+{
+"BRCA1": {...},
+"TP53": {...}
+}
+Step 3: Go through every variant in results
+
+Flow:
+
+Plain Text
+for each variant:
+ 
+Example first variant:
+Python
+{"gene": "BRCA1", "decision": "prioritize", "depth": 100}
+
+Extract:
+Plain Text
+gene = BRCA1
+decision = prioritize
+depth = 100
+Step 4: First time seeing a gene?
+
+Ask:
+Plain Text
+Is BRCA1 already in summary?
+
+If NO:
+Create its counters.
+
+Conceptually:
+Python
+summary["BRCA1"] = {
+"total": 0,
+"prioritize": 0,
+"review": 0,
+"exclude": 0,
+"sum_depth": 0
+}
+
+Why sum_depth?
+
+Because you need mean depth later.
+Step 5: Update counts
+For every variant:
+
+Increase total:
+Plain Text
+total += 1
+Then increase the matching decision count:
+
+If decision is:
+Plain Text
+prioritize -> prioritize += 1
+review -> review += 1
+exclude -> exclude += 1
+Step 6: Accumulate depth
+
+Don't calculate mean yet.
+Just keep adding depth:
+
+Plain Text
+sum_depth += current depth
+
+Example:
+Plain Text
+BRCA1 depths:
+100
+80
+
+Store:
+
+Plain Text
+sum_depth = 180
+Step 7: Continue until all variants processed
+
+Suppose after the loop:
+
+Python
+{
+"BRCA1": {
+"total": 2,
+"prioritize": 1,
+"review": 0,
+"exclude": 1,
+"sum_depth": 180
+},
+"TP53": {
+"total": 1,
+"prioritize": 0,
+"review": 1,
+"exclude": 0,
+"sum_depth": 50
+}
+}
+Step 8: Calculate mean_depth
+Now go through each gene in the summary.
+
+For each gene:
+Plain Text
+mean_depth = sum_depth / total
+
+Example:
+Plain Text
+BRCA1
+180 / 2 = 90.0
+ 
+TP53
+50 / 1 = 50.0
+
+Round to 1 decimal place.
+Step 9: Remove temporary data
+
+The specification wants:
+
+Plain Text
+total
+prioritize
+review
+exclude
+mean_depth
+
+It does not mention:
+
+Plain Text
+sum_depth
+
+So after mean_depth is calculated:
+
+Plain Text
+remove sum_depth
+Step 10: Return genes in alphabetical order
+
+Required output:
+Plain Text
+BRCA1
+TP53
+
+because alphabetically:
+
+Plain Text
+B comes before T
+Final structure:
+
+Python
+{
+"BRCA1": {
+"total": 2,
+"prioritize": 1,
+"review": 0,
+"exclude": 1,
+"mean_depth": 90.0
+},
+"TP53": {
+"total": 1,
+"prioritize": 0,
+"review": 1,
+"exclude": 0,
+"mean_depth": 50.0
+}
+}
+
+- Verified by: i add my own test after each function i created and see if the output follows my expectation or not
+- My change: i follow what Ai recommend 
+- Used in: a1_triage.py
+
+
