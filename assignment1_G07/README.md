@@ -9,8 +9,6 @@
 - Members: NORHASLIN BINTI SHARI (A24CS0149), FATIN SYAKIRAH BINTI MOHAMAD HARDON (A24CS0073), BATRISYIA AMANI BINTI KHAIRUN HALED (A24CS0054)
 
 ## What this project does
-
-<Three or four sentences: what a variant triage service is, what goes in, what comes out.>
 This project is a rule-based variant triage service that classifies genetic variants as prioritize, review, or exclude. It reads variant data from a CSV file and parameters from a JSON file, applies predefined classification rules, and generates a CSV output and summary report.
 ## Set up
 
@@ -21,16 +19,12 @@ pip install -r requirements.txt
 ```
 
 ## Run
-Run the program using:
+Command : python src/a1_triage.py data/variants.csv data/params.json results
 
-python src/a1_triage.py data/variants.csv data/params.json results
-
-The program generates the following files in the results/ directory:
+Files in the results/ directory:
 
 - triage.csv - classified variant results
 - report.txt - summary report containing statistics and decision counts
-
-<Say which files appear in results/.>
 
 ## Test and lint
 
@@ -56,15 +50,11 @@ ruff check src
 They are read at run time and passed to the functions; they are not typed into the rules.
 
 ## Design
-
-<Link to docs/design.md and say in two sentences what it contains.>
 The document describes the problem decomposition, classification rules, pseudocode, hand-traced examples, test plan, and work allocation among group members. It explains how variant data are processed and how classification decisions are produced based on configurable thresholds and priority genes.
 
 ## Limitations
 1. Only depth, quality, gene priority, and impact are considered when making decisions; other genomic factors are not evaluated.
 2. Missing or malformed input fields may cause errors if they are not handled before processing.
-
-<At least two honest limitations, for example: rules use depth, quality and impact only; the data are synthetic.>
 
 ## Who did what
 
