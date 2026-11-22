@@ -247,8 +247,6 @@ plus whatever newline requirement the spec asks for.
 - My change: i follow what Ai recommend 
 - Used in: a1_triage.py
 
-<!-- Copy the whole 'Entry' block for each extra interaction: ## Entry 2, ## Entry 3 ... -->
-
 ## Entry 2 (Norhaslin Binti Shari)
 
 - Date: 21 November 2026 (6:53 PM)
@@ -285,13 +283,9 @@ because the specification says:
 Empty input gives {}
 
 Step 2: Create an empty summary dictionary
-
-Think:
-
-Plain Text
-summary = {}
+Think: Plain Text summary = {}
 This dictionary will eventually look like:
-=
+
 Python
 {
 "BRCA1": {...},

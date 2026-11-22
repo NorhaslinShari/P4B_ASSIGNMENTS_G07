@@ -1,9 +1,7 @@
 # Design - Variant Triage Service
 
-Write this BEFORE you write the code, then keep it up to date. It is marked by the lecturer.
-Use your own words, your own thresholds and your own data. Delete the guidance in italics.
-
-Group ID: G07    Thresholds from data/params.json: min_depth = <...>, min_quality = <...>, top_k = <...>
+Group ID: G07    
+Thresholds from data/params.json: min_depth = 12, min_quality = 70, top_k = 6
 
 ## 1. Decomposition
 
@@ -16,9 +14,6 @@ Group ID: G07    Thresholds from data/params.json: min_depth = <...>, min_qualit
 | Out of scope | Reading and writing files (main is given), validating chrom, ref or alt, biological interpretation, and handling missing columns |
 
 ## 2. Pseudocode or flowchart of classify_variant
-
-*Give either structured pseudocode (indentation, IF / ELSE, RETURN) or a flowchart (a picture file
-committed in docs/ and linked here, or a Mermaid block). Show all six rules.*
 
 FUNCTION classify_variant(row, params)
 
@@ -48,9 +43,6 @@ END FUNCTION
 
 ## 3. Hand trace
 
-*Trace the first six rows of YOUR data/variants.csv (v1 to v6) with YOUR thresholds, then two more rows of
-your choice that reach rules 3 to 6. Do it by hand BEFORE you run your code, then compare with your code.*
-
 | Variant | Gene | Depth | Quality | Impact | Rule that fires | Decision | Reason |
 |---|---|---|---|---|---|---|---|
 | v1 | RB1 | 9 | 90 | moderate | Rule 1 | exclude | depth 9 below min_depth 12 |
@@ -64,9 +56,6 @@ your choice that reach rules 3 to 6. Do it by hand BEFORE you run your code, the
 
 ## 4. Test plan
 
-*List the cases you will test: normal, boundary (exactly at YOUR thresholds, one below, one above), invalid or
-awkward input (empty list, k = 0, k larger than the data, messy text). One line per case.*
-
 - Normal case: A priority gene with high impact should return prioritize.
 - Boundary case: Depth 11 should be excluded because it is below min_depth 12.
 - Boundary case: Depth 12 should pass because it equals min_depth 12.
@@ -78,7 +67,6 @@ awkward input (empty list, k = 0, k larger than the data, messy text). One line 
 
 ## 5. Work plan
 
-*Who builds which function, in which order, and how you will review each other's code.*
 - Fatin Syakirah will complete Task 1 (Design) and Task 7 (Group work, Git evidence and AI log).
 - Batrisyia Amani will complete Task 2 (Triage rules) and Task 4 (Ranked top-k).
 - Norhaslin will complete Task 3 (Summaries), Task 5 (CSV export and report), and Task 6 (Tests, README and code quality).
