@@ -58,7 +58,7 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
 
     raw_impacts = params.get("priority_impacts", ["high", "moderate"])
     priority_impacts = {i.lower() for i in raw_impacts}
-    
+     
     raw_panel_genes = params.get("panel_genes", params.get("priority_genes", None))
     panel_genes = {g.lower() for g in raw_panel_genes} if raw_panel_genes is not None else None
 
