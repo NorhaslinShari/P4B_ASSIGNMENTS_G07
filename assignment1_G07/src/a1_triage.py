@@ -84,6 +84,9 @@ def gene_summary(results: list[dict]) -> dict[str, dict]:
     where mean_depth is the mean depth of ALL the gene's variants, rounded to 1 decimal.
     """
     # result untuk tiap gene
+    if results == []:
+        return {}
+    
     summary = {}
     for result in results:
         gene = result["gene"]
