@@ -1,4 +1,5 @@
 """Visible tests: a few clear cases. The hidden tests use YOUR group's data and other thresholds as well."""
+
 from a1_triage import (
     CSV_COLUMNS,
     classify_variant,
@@ -12,8 +13,15 @@ PARAMS = {"min_depth": 10, "min_quality": 80, "priority_genes": ["BRCA1", "TP53"
 
 
 def make_row(variant="v1", gene="BRCA1", depth=40, quality=95, impact="high", pos=1000):
-    return {"variant": variant, "gene": gene, "chrom": "17", "pos": str(pos), "depth": str(depth),
-            "quality": str(quality), "impact": impact}
+    return {
+        "variant": variant,
+        "gene": gene,
+        "chrom": "17",
+        "pos": str(pos),
+        "depth": str(depth),
+        "quality": str(quality),
+        "impact": impact,
+    }
 
 
 def test_low_depth_is_excluded_with_a_reason():
@@ -39,7 +47,8 @@ def test_triage_adds_decision_and_reason():
 
 def test_rank_variants_returns_at_most_k():
     results = triage([make_row(variant=f"v{i}", pos=i) for i in range(5)], PARAMS)
-    assert len(rank_variants(results, 3)) == 3
+    top_k = PARAMS["top_k"]
+    assert len(rank_variants(results, top_k)) == top_k
 
 
 def test_csv_text_starts_with_the_header():

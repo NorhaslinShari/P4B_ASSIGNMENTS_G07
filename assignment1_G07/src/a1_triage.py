@@ -4,6 +4,7 @@ Reads variant calls, applies ordered triage rules with named thresholds, records
 reason for every decision and produces summaries, a ranked top-k list, a CSV text
 and a short text report. Nothing here is clinical advice.
 """
+
 import csv
 import json
 import sys
@@ -13,7 +14,15 @@ DECISIONS = ("prioritize", "review", "exclude")
 IMPACT_ORDER = ("high", "moderate", "low", "modifier")
 PRIORITY_IMPACTS = frozenset({"high", "moderate"})
 CSV_COLUMNS = [
-    "variant", "gene", "chrom", "pos", "depth", "quality", "impact", "decision", "reason",
+    "variant",
+    "gene",
+    "chrom",
+    "pos",
+    "depth",
+    "quality",
+    "impact",
+    "decision",
+    "reason",
 ]
 CLI_ARGUMENTS = 3
 
@@ -34,21 +43,23 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     """Return (decision, reason) for one variant row.
 
     Rules run in this order and the first rule that fires decides:
-      1. depth < params["min_depth"]                      -> exclude (low depth)
-      2. quality < params["min_quality"]                  -> exclude (low quality)
-      3. priority gene and impact high or moderate        -> prioritize
-      4. priority gene and impact low or modifier         -> review
-      5. other gene and impact high or moderate           -> review
-      6. other gene and impact low or modifier            -> exclude
+    1. depth < params["min_depth"]                      -> exclude (low depth)
+    2. quality < params["min_quality"]                  -> exclude (low quality)
+    3. priority gene and impact high or moderate        -> prioritize
+    4. priority gene and impact low or modifier         -> review
+    5. other gene and impact high or moderate           -> review
+    6. other gene and impact low or modifier            -> exclude
     Gene symbols and impact labels are compared after strip() and case folding.
     depth, quality and pos may arrive as text.
     """
-    min_depth = int(params.get("min_depth", 10))
-    min_quality = int(params.get("min_quality", 80))
     depth = int(row["depth"])
     quality = int(row["quality"])
-    gene = str(row.get("gene", row.get("gene_symbol", ""))).strip()
-    impact = str(row.get("impact", "")).strip()
+    gene = str(row["gene"]).strip().upper()
+    impact = str(row["impact"]).strip().lower()
+
+    min_depth = params["min_depth"]
+    min_quality = params["min_quality"]
+    priority_genes = {str(g).strip().upper() for g in params.get("priority_genes", [])}
 
     if depth < min_depth:
         return "exclude", f"low depth {depth} threshold {min_depth}"
@@ -56,18 +67,19 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     if quality < min_quality:
         return "exclude", f"low quality {quality} threshold {min_quality}"
 
-    raw_impacts = params.get("priority_impacts", ["high", "moderate"])
-    priority_impacts = {i.lower() for i in raw_impacts}
-     
-    raw_panel_genes = params.get("panel_genes", params.get("priority_genes", None))
-    panel_genes = {g.lower() for g in raw_panel_genes} if raw_panel_genes is not None else None
+    is_priority_gene = gene in priority_genes
+    is_high_or_mod = impact in PRIORITY_IMPACTS
 
-    if panel_genes is not None and gene.lower() in panel_genes:
-        return "prioritize", f"panel_gene gene {gene}"
-    elif impact.lower() in priority_impacts:
-        return "prioritize", f"prioritize_impact impact {impact} gene {gene}"
-    else:
-        return "review", f"review_impact impact {impact} gene {gene}"
+    if is_priority_gene and is_high_or_mod:
+        return "prioritize", f"priority gene {gene} with {impact} impact"
+
+    if is_priority_gene:
+        return "review", f"priority gene {gene} with {impact} impact"
+
+    if is_high_or_mod:
+        return "review", f"other gene {gene} with {impact} impact"
+
+    return "exclude", f"other gene {gene} with {impact} impact"
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
@@ -87,10 +99,14 @@ def triage(rows: list[dict], params: dict) -> list[dict]:
 
 def decision_counts(results: list[dict]) -> dict[str, int]:
     """Number of results per decision; keys are always prioritize, review, exclude (in order)."""
-    count = { "prioritize": 0, "review": 0, "exclude": 0,} 
+    count = {
+        "prioritize": 0,
+        "review": 0,
+        "exclude": 0,
+    }
     for result in results:
-        decision = result["decision"] #specific to decision in results = decision : prioritize
-        count[decision] += 1 # add 1 to prioritize
+        decision = result["decision"]  # specific to decision in results = decision : prioritize
+        count[decision] += 1  # add 1 to prioritize
 
     return count
 
@@ -100,13 +116,14 @@ def impact_counts(results: list[dict]) -> dict[str, int]:
 
     Keys are always high, moderate, low, modifier (in that order), zeros included.
     """
-    count = { "high": 0, "moderate": 0, "low": 0, "modifier": 0}
+    count = {"high": 0, "moderate": 0, "low": 0, "modifier": 0}
     for result in results:
         if result["decision"] != "exclude":
             impact = result["impact"]
-            count[impact] += 1 
+            count[impact] += 1
 
-    return count # same with decision_count
+    return count  # same with decision_count
+
 
 def gene_summary(results: list[dict]) -> dict[str, dict]:
     """Per-gene summary, genes in alphabetical order.
@@ -117,30 +134,31 @@ def gene_summary(results: list[dict]) -> dict[str, dict]:
     # result untuk tiap gene
     if results == []:
         return {}
-    
+
     summary = {}
     for result in results:
         gene = result["gene"]
 
-        if gene not in summary: #initialize
-            summary[gene] = {
-                "total": 0, "prioritize": 0, "review": 0, 
-                "exclude": 0, "sum_depth": 0
-            }
+        if gene not in summary:  # initialize
+            summary[gene] = {"total": 0, "prioritize": 0, "review": 0, "exclude": 0, "sum_depth": 0}
 
-        summary[gene]["total"] += 1 # if exist gene dlm summary then proceed count 
+        summary[gene]["total"] += 1  # if exist gene dlm summary then proceed count
         summary[gene][result["decision"]] += 1
         summary[gene]["sum_depth"] += result["depth"]
 
     gene_summarize = {}
 
-    for gene in sorted(summary): #sort kan gene
-        total = summary[gene]["total"]  #already store value
+    for gene in sorted(summary):  # sort kan gene
+        total = summary[gene]["total"]  # already store value
         depth = summary[gene]["sum_depth"]
 
-        gene_summarize[gene]= {"total": total, "prioritize": summary[gene]["prioritize"],
-                                "review": summary[gene]["review"], "exclude": summary[gene]["exclude"],
-                                "mean_depth":round(depth/total, 1)}
+        gene_summarize[gene] = {
+            "total": total,
+            "prioritize": summary[gene]["prioritize"],
+            "review": summary[gene]["review"],
+            "exclude": summary[gene]["exclude"],
+            "mean_depth": round(depth / total, 1),
+        }
     return gene_summarize
 
 
@@ -161,11 +179,11 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
     sorted_results = sorted(
         filtered_results,
         key=lambda r: (
-            0 if r.get("decision") == "prioritize" else 1,   
-            -int(r.get("quality", 0)),                
-            -int(r.get("depth", 0)),                  
-            int(r.get("pos", 0))                     
-        )
+            0 if r.get("decision") == "prioritize" else 1,
+            -int(r.get("quality", 0)),
+            -int(r.get("depth", 0)),
+            int(r.get("pos", 0)),
+        ),
     )
 
     return sorted_results[:k]
@@ -179,9 +197,9 @@ def results_to_csv(results: list[dict]) -> str:
     header_line = [",".join(CSV_COLUMNS)]
     for result in results:
         row = ",".join(str(result[column]) for column in CSV_COLUMNS)
-        header_line.append(row) # heaedr_line append new row (only list can append!)
+        header_line.append(row)  # heaedr_line append new row (only list can append!)
 
-    return "\n".join(header_line) + "\n" # add both end
+    return "\n".join(header_line) + "\n"  # add both end
 
 
 def build_report(results: list[dict], params: dict) -> str:
@@ -194,20 +212,25 @@ def build_report(results: list[dict], params: dict) -> str:
     count = decision_counts(results)
 
     report = [
-    "Variant triage report (synthetic teaching data)",
-    f"Thresholds: min_depth={params['min_depth']} min_quality={params['min_quality']}",
-    f"Priority genes: {', '.join(params['priority_genes'])}",
-    f"Variants: {len(results)}",
-    f"prioritize: {count['prioritize']}",
-    f"review: {count['review']}",
-    f"exclude: {count['exclude']}", "", # add blank line ikot mcm exp report
-    f"Top {params['top_k']} variants", ]
+        "Variant triage report (synthetic teaching data)",
+        f"Thresholds: min_depth={params['min_depth']} min_quality={params['min_quality']}",
+        f"Priority genes: {', '.join(params['priority_genes'])}",
+        f"Variants: {len(results)}",
+        f"prioritize: {count['prioritize']}",
+        f"review: {count['review']}",
+        f"exclude: {count['exclude']}",
+        "",  # add blank line ikot mcm exp report
+        f"Top {params['top_k']} variants",
+    ]
 
     top = rank_variants(results, params["top_k"])
     for i, variant in enumerate(top, start=1):
-        report.append(f"{i}. {variant['variant']} | {variant['gene']} | {variant['impact']} | {variant['decision']}" )
+        report.append(
+            f"{i}. {variant['variant']} | {variant['gene']} | {variant['impact']} | {variant['decision']}"
+        )
 
     return "\n".join(report) + "\n"
+
 
 def main(argv: list[str] | None = None) -> int:
     """Command line: python src/a1_triage.py VARIANTS_CSV PARAMS_JSON OUT_DIR."""
