@@ -4,10 +4,17 @@
 
 - Course: SECB3203
 - Assessment: Assignment 1
-- Student name: <full name>
-- Matric no: <matric>
-- Group ID: <group work only, else n/a>
-- AI level: <0, 1 or 2 - see the assessment brief>
+- Student name:
+    - Member 1: Batrisyia Amani Binti Khairun Haled
+    - Member 2: Fatin Syakirah Binti Muhamad Hardon
+    - Member 3: Norhaslin Binti Shari
+
+- Matric no: 
+    - Member 1: A24CS0054
+    - Member 2: A24CS0073
+    - Member 3: A24CS0149
+- Group ID: G07
+- AI level: 1
 - Tools cited: <UTM format, e.g. OpenAI (2026). ChatGPT (GPT-5). Retrieved 12 October 2026 from https://chat.openai.com>
 
 ## Declaration (tick exactly one)
@@ -15,7 +22,7 @@
 - [ ] NIL RETURN: I did not use any generative AI tool for this assessment.
 - [/] I used AI. Every interaction that influenced my work is logged below. The log is true and complete.
 
-## Entry 1
+## Entry 1 (Norhaslin Binti Shari)
 
 - Date: 20 November 2026 (4:45 PM)
 - Tool: Tools cited: Microsoft Copilot (GPT-5 Chat Model). Accessed 21 November 2026. Available at: https://copilot.microsoft.com/ 
@@ -240,9 +247,7 @@ plus whatever newline requirement the spec asks for.
 - My change: i follow what Ai recommend 
 - Used in: a1_triage.py
 
-<!-- Copy the whole 'Entry' block for each extra interaction: ## Entry 2, ## Entry 3 ... -->
-
-## Entry 2
+## Entry 2 (Norhaslin Binti Shari)
 
 - Date: 21 November 2026 (6:53 PM)
 - Tool: Tools cited: Microsoft Copilot (GPT-5 Chat Model). Accessed 21 November 2026. Available at: https://copilot.microsoft.com/ 
@@ -278,13 +283,9 @@ because the specification says:
 Empty input gives {}
 
 Step 2: Create an empty summary dictionary
-
-Think:
-
-Plain Text
-summary = {}
+Think: Plain Text summary = {}
 This dictionary will eventually look like:
-=
+
 Python
 {
 "BRCA1": {...},
@@ -451,4 +452,34 @@ Python
 - My change: i follow what Ai recommend 
 - Used in: a1_triage.py
 
+## Entry 3 (Fatin Syakirah Binti Muhamad Hardon)
 
+- Date: 21 November 2026 (3:20 PM)
+- Tool: Tools cited: Microsoft Copilot (GPT-5 Chat Model). Accessed 21 November 2026. Available at: https://copilot.microsoft.com/ 
+- Purpose: explain and hint
+- Prompt: can u help me explain and give hints how to do task 1 from number 3? 
+- Output: I'll explain how to approach each part and give hints. I won't fill in design.md for you, and the content has to be in your own words anyway. 
+3. Hand trace
+
+Do this before running any code:
+
+For v1 to v6, compare depth with your min_depth and quality with your min_quality. Work out the rule that fires.
+The hint says the cut-offs aren't 10 and 80 for you. A row with depth 10 may pass or fail depending on your number, so check each one carefully.
+For the two extra rows, scan the CSV for one row that reaches rule 3 or 4 (priority gene) and another that reaches rule 5 or 6 (non-priority gene). Choose rows that together cover different rules from those v1 to v6 reach.
+Write the reason in the style the spec requires: no commas, and it names the observed value and the threshold for the QC rules.
+4. Test plan
+
+One line per case, in four groups:
+
+Normal: one case per rule (6 cases).
+Boundary: for each of your two thresholds, one below, exactly at, and one above.
+Awkward: messy text like ' brca1 ' or 'HIGH', an empty list, k = 0, k larger than the data.
+Invalid: k < 0 raising ValueError.
+5. Work plan
+
+Decide who builds which function and in what order. A sensible order is: classify_variant, then triage, then the summaries, then ranking, then the CSV and report. Say how you'll review each other's code, and make sure each member will have 3 commits.
+
+If you paste your draft sections or your hand-trace table, I can check whether your reasoning holds up, for example whether a row really hits the rule you wrote. Which section do you want to start with?
+- Verified by: i add my own hand trace and see if the output follows my expectation or not
+- My change: i follow what Ai recommend 
+- Used in: design.md
