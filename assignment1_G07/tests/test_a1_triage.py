@@ -8,7 +8,7 @@ from a1_triage import (
 PARAMS = {"min_depth": 12, "min_quality": 80, "priority_genes": ["BRCA2", "ATM"], "top_k": 3}
 
 
-def row(variant="v1", gene="BRCA1", depth=40, quality=95, impact="high", pos=1000):
+def row(variant="v1", gene="BRCA2", depth=40, quality=95, impact="high", pos=1000):
     return {
         "variant": variant,
         "gene": gene,
