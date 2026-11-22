@@ -6,11 +6,12 @@ Complete this file in the first week, commit it, and do not delete the headings.
 
 # 1. Group and members
 
-- Group ID: <for example G07>
-- Member 1: <full name>, <matric number>, <role for the first two weeks>
-- Member 2: <full name>, <matric number>, <role for the first two weeks>
-- Member 3: <full name>, <matric number>, <role for the first two weeks>
-- Member 4: <full name>, <matric number>, <role for the first two weeks>
+- Group ID: G07
+- Member 1: FATIN SYAKIRAH BINTI MOHAMAD HARDON, A24CS0073, <role for the first two weeks>
+- Member 2: BATRISYIA AMANI BINTI KHAIRUN HALED, A24CS0054, <role for the first two weeks>
+- Member 3: NORHASLIN BINTI SHARI, A24CS0149, 
+<role for the first two weeks>
+
 
 - Group ID: G07
 - Member 1: Batrisyia Amani Binti Khairun Haled, A24CS0054, implementer and coordinator
@@ -70,5 +71,5 @@ We keep one shared AI_USE_LOG.md file for the whole group. Fatin Syakirah Binti 
 ## 8. Signatures
 
 - Signed: <full name>, <matric number>, <date>
+- Signed: NORHASLIN BINTI SHARI, A24CS0149, 21 November 2026
 - Signed: Fatin Syakirah Binti Muhamad Hardon, A24CS0073, 22/11/2026
-- Signed: <full name>, <matric number>, <date>
