@@ -67,9 +67,9 @@ The document describes the problem decomposition, classification rules, pseudoco
 =======
 |     Member     | Main contributions                                    | Commits  |
 |----------------|-------------------------------------------------------|----------|
-| Fatin Syakirah | docs/design.md, GROUP_CONTRACT, AI_USE_LOG.md         | <number> |
-| Batrisyia Amani| classify_variant(), triage(), rank_variants()         |          |
-| Norhaslin      | decision_counts(), results_to_csv(), build_report(),  |          |
+| Fatin Syakirah | docs/design.md, GROUP_CONTRACT, AI_USE_LOG.md         |     9    |
+| Batrisyia Amani| classify_variant(), triage(), rank_variants()         |    34    |
+| Norhaslin      | decision_counts(), results_to_csv(), build_report(),  |    17    |
 |                |  test_a1_triage.py, gene_summary(), impact_count()    |          |
 |                |  README.md and code quality checks                    |          |
 >>>>>>> 0c2fd7d0c213fdac05fefde039ea0336d4f432be

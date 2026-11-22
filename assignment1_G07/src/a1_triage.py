@@ -43,36 +43,43 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     """Return (decision, reason) for one variant row.
 
     Rules run in this order and the first rule that fires decides:
-      1. depth < params["min_depth"]                      -> exclude (low depth)
-      2. quality < params["min_quality"]                  -> exclude (low quality)
-      3. priority gene and impact high or moderate        -> prioritize
-      4. priority gene and impact low or modifier         -> review
-      5. other gene and impact high or moderate           -> review
-      6. other gene and impact low or modifier            -> exclude
+    1. depth < params["min_depth"]                      -> exclude (low depth)
+    2. quality < params["min_quality"]                  -> exclude (low quality)
+    3. priority gene and impact high or moderate        -> prioritize
+    4. priority gene and impact low or modifier         -> review
+    5. other gene and impact high or moderate           -> review
+    6. other gene and impact low or modifier            -> exclude
     Gene symbols and impact labels are compared after strip() and case folding.
     depth, quality and pos may arrive as text.
     """
-    depth = int(row["depth"].strip())
-    quality = int(row["quality"].strip())
-    gene = row["gene"].strip().upper()
-    impact = row["impact"].strip().lower()
+    depth = int(row["depth"])
+    quality = int(row["quality"])
+    gene = str(row["gene"]).strip().upper()
+    impact = str(row["impact"]).strip().lower()
+
     min_depth = params["min_depth"]
     min_quality = params["min_quality"]
-    priority_genes = {g.strip().upper() for g in params.get("priority_genes", [])}
+    priority_genes = {str(g).strip().upper() for g in params.get("priority_genes", [])}
 
     if depth < min_depth:
         return "exclude", f"low depth {depth} threshold {min_depth}"
 
     if quality < min_quality:
-        return "review", f"low quality {quality} threshold {min_quality}"
+        return "exclude", f"low quality {quality} threshold {min_quality}"
 
-    if impact == "high" or gene in priority_genes:
-        return "prioritize", "high impact or priority gene"
+    is_priority_gene = gene in priority_genes
+    is_high_or_mod = impact in PRIORITY_IMPACTS
 
-    if impact == "moderate":
-        return "review", "moderate impact"
+    if is_priority_gene and is_high_or_mod:
+        return "prioritize", f"priority gene {gene} with {impact} impact"
 
-    return "exclude", f"low impact in {gene}"
+    if is_priority_gene:
+        return "review", f"priority gene {gene} with {impact} impact"
+
+    if is_high_or_mod:
+        return "review", f"other gene {gene} with {impact} impact"
+
+    return "exclude", f"other gene {gene} with {impact} impact"
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
