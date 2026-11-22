@@ -43,7 +43,31 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     Gene symbols and impact labels are compared after strip() and case folding.
     depth, quality and pos may arrive as text.
     """
-    raise NotImplementedError("TODO: implement classify_variant")
+    min_depth = int(params.get("min_depth", 10))
+    min_quality = int(params.get("min_quality", 80))
+    depth = int(row["depth"])
+    quality = int(row["quality"])
+    gene = str(row.get("gene", row.get("gene_symbol", ""))).strip()
+    impact = str(row.get("impact", "")).strip()
+
+    if depth < min_depth:
+        return "exclude", f"low depth {depth} threshold {min_depth}"
+
+    if quality < min_quality:
+        return "exclude", f"low quality {quality} threshold {min_quality}"
+
+    raw_impacts = params.get("priority_impacts", ["high", "moderate"])
+    priority_impacts = {i.lower() for i in raw_impacts}
+    
+    raw_panel_genes = params.get("panel_genes", params.get("priority_genes", None))
+    panel_genes = {g.lower() for g in raw_panel_genes} if raw_panel_genes is not None else None
+
+    if panel_genes is not None and gene.lower() in panel_genes:
+        return "prioritize", f"panel_gene gene {gene}"
+    elif impact.lower() in priority_impacts:
+        return "prioritize", f"prioritize_impact impact {impact} gene {gene}"
+    else:
+        return "review", f"review_impact impact {impact} gene {gene}"
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
@@ -51,7 +75,14 @@ def triage(rows: list[dict], params: dict) -> list[dict]:
 
     The input rows and params are never modified.
     """
-    raise NotImplementedError("TODO: implement triage")
+    results = []
+    for row in rows:
+        decision, reason = classify_variant(row, params)
+        new_row = row.copy()
+        new_row["decision"] = decision
+        new_row["reason"] = reason
+        results.append(new_row)
+    return results
 
 
 def decision_counts(results: list[dict]) -> dict[str, int]:
@@ -85,7 +116,22 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
     Raises:
         ValueError: if k is negative.
     """
-    raise NotImplementedError("TODO: implement rank_variants")
+    if k < 0:
+        raise ValueError("k must be non-negative")
+
+    filtered_results = [r for r in results if r["decision"] != "exclude"]
+
+    sorted_results = sorted(
+        filtered_results,
+        key=lambda r: (
+            0 if r.get("decision") == "prioritize" else 1,   
+            -int(r.get("quality", 0)),                
+            -int(r.get("depth", 0)),                  
+            int(r.get("pos", 0))                     
+        )
+    )
+
+    return sorted_results[:k]
 
 
 def results_to_csv(results: list[dict]) -> str:

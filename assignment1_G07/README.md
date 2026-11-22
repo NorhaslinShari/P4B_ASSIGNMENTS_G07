@@ -47,11 +47,11 @@ They are read at run time and passed to the functions; they are not typed into t
 
 ## Who did what
 
-|     Member     | Main contributions   | Commits  |
-|----------------|----------------------|----------|
-| Fatin Syakirah | <files or functions> | <number> |
-| Batrisyia Amani|                      |          |
-| Norhaslin      |                      |          |
+|     Member     | Main contributions                            | Commits  |
+|----------------|-----------------------------------------------|----------|
+| Fatin Syakirah | <files or functions>                          | <number> |
+| Batrisyia Amani| <classify_variant, triage, and rank_variants> |          |
+| Norhaslin      |                                               |          |
 
 
 ## AI use
