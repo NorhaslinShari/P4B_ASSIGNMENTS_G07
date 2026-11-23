@@ -23,8 +23,8 @@ Command : python src/a1_triage.py data/variants.csv data/params.json results
 
 Files in the results/ directory:
 
-- triage.csv - classified variant results
-- report.txt - summary report containing statistics and decision counts
+- triage.csv 
+- report.txt 
 
 ## Test and lint
 
@@ -58,23 +58,14 @@ The document describes the problem decomposition, classification rules, pseudoco
 
 ## Who did what
 
-<<<<<<< HEAD
-|     Member     | Main contributions                            | Commits  |
-|----------------|-----------------------------------------------|----------|
-| Fatin Syakirah | <files or functions>                          | <number> |
-| Batrisyia Amani| <classify_variant, triage, and rank_variants> |          |
-| Norhaslin      |                                               |          |
-=======
 |     Member     | Main contributions                                    | Commits  |
 |----------------|-------------------------------------------------------|----------|
 | Fatin Syakirah | docs/design.md, GROUP_CONTRACT, AI_USE_LOG.md         |    9     |
-| Batrisyia Amani| classify_variant(), triage(), rank_variants()         |    34    |
-| Norhaslin      | decision_counts(), results_to_csv(), build_report(),  |    30    |
+| Batrisyia Amani| classify_variant(), triage(), rank_variants()         |    7     |
+| Norhaslin      | decision_counts(), results_to_csv(), build_report(),  |    32    |
 |                |  test_a1_triage.py, gene_summary(), impact_count()    |          |
 |                |  README.md and code quality checks                    |          |
->>>>>>> 0c2fd7d0c213fdac05fefde039ea0336d4f432be
 
 
 ## AI use
-
 Yes, we all use AI
