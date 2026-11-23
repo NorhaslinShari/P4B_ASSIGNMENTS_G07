@@ -483,3 +483,43 @@ If you paste your draft sections or your hand-trace table, I can check whether y
 - Verified by: i add my own hand trace and see if the output follows my expectation or not
 - My change: i follow what Ai recommend 
 - Used in: design.md
+
+## Entry 4 (Batrisyia Amani binti Khairun Haled)
+
+- Date: 22 November 2026 (12:13 AM)
+- Tool: Tools cited: Anthropic (Sonnet 5.5 Claude). Accessed 22 November 2026. Available at: https://claude.ai/new
+- Purpose: debug
+- Prompt: why my code didnt work?(insert code for a1_triage.py and screenshot of question)
+- Output:
+#Blocking problems
+
+**1. Unresolved merge conflict (lines 69–78).**
+- The `<<<<<<<`, `=======` and `>>>>>>>` markers are a SyntaxError, so nothing runs or imports yet.
+- Neither side is correct, so don't just pick one.
+- HEAD (`impact == "high" or gene in priority_genes`) doesn't match rules 3–6. It ignores moderate impact and treats any priority gene as prioritize.
+- The incoming side lowercases the genes (`g.lower()`) while `gene` above is uppercased, so they would never match. It also reads `panel_genes` and `priority_impacts`, which aren't in the spec. The spec only gives you `priority_genes`.
+- Delete both sides and write the rule block once.
+- You already have `PRIORITY_IMPACTS` at the top of the file. The assignment wants named constants, so use it.
+
+**2. Rule 2 returns the wrong decision (line 67).** The rule table says quality below `min_quality` means `exclude`, but your code returns `"review"`.
+
+**3. Rules 3–6 aren't implemented (lines 80–83).**
+- Right now moderate always means review and everything else means exclude.
+- The decision depends on two yes/no facts: is the gene a priority gene, and is the impact in `PRIORITY_IMPACTS`.
+- Work out the four combinations from the rule table. Each one needs its own reason that mentions the gene or the impact.
+
+#Bugs that the hidden tests will likely hit
+
+- **`gene_summary` (line 148):** `result["depth"]` is still text when it comes from the CSV, so `+=` on an int raises a `TypeError`. Convert it with `int()`.
+- **`impact_counts` (line 123):** `count[impact]` raises a `KeyError` for `" HIGH "`, because the brief says messy text is compared after `strip()` and case folding. Normalise it the way `classify_variant` does. The result dicts keep the original text, so you have to normalise again here.
+- **`rank_variants` (lines 182–188):** your sort key skips the impact step. The spec order is decision, then impact (high, moderate, low, modifier), then higher quality, then higher depth, then smaller `pos`. `IMPACT_ORDER.index(...)` on the normalised impact gives you the number you need.
+- **`classify_variant` (lines 55–56):** `row["depth"].strip()` fails when the hidden tests pass real ints, which the brief says they do. `int()` already accepts both `"12"` and `" 12 "`, so the `.strip()` isn't needed there.
+
+#Smaller points
+
+- For the two QC rules, name the parameter in the reason, for example `min_depth` rather than just "threshold". That's safer for the "names the rule, observed value and threshold" criterion. Reasons must still contain no commas.
+- `decision_counts`, `results_to_csv`, `build_report` and `triage` look correct to me. `triage` copies each row and doesn't touch `params`.
+- Normalise a gene the same way wherever you compare it. Do it in one small helper rather than copy-pasting `.strip().upper()`, since the code-quality marks penalise copy-paste.
+- Verified by: i add what i understand from ai explanation and verifying by pytest and ruff
+- My change: i follow what Ai recommend 
+- Used in: a1_triage.py
