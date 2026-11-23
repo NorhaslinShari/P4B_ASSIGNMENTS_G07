@@ -68,6 +68,6 @@ We keep one shared AI_USE_LOG.md file for the whole group. Fatin Syakirah Binti 
 
 ## 8. Signatures
 
-- Signed: <full name>, <matric number>, <date>
+- Signed: BATRISYIA AMANI BINTI KHAIRUN HALED, A24CS0054, 23 November 2026
 - Signed: NORHASLIN BINTI SHARI, A24CS0149, 21 November 2026
 - Signed: Fatin Syakirah Binti Muhamad Hardon, A24CS0073, 22/11/2026
